@@ -14,6 +14,7 @@ from scipy import stats
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+from pathlib import Path
 
 # ============================================================
 # Page Configuration
@@ -60,8 +61,8 @@ CATEGORIES = {
 
 @st.cache_data
 def load_data():
-
-    data = pd.read_csv("tips_clean.csv")
+    data_path = Path(__file__).parent / "tips_clean.csv"
+    data = pd.read_csv(data_path)
 
     # Restore the same categorical ordering used in the notebook
     data["sex"] = pd.Categorical(
