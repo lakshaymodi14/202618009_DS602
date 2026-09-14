@@ -970,29 +970,29 @@ with tab3:
         st.pyplot(fig)
 
         plt.close(fig)
+        
+with col2:
 
-    with col2:
+    fig, ax = plt.subplots(
+        figsize=(7, 5)
+    )
 
-        fig = plt.figure(
-            figsize=(7, 5)
-        )
+    sm.qqplot(
+        model.resid,
+        line="45",
+        fit=True,
+        ax=ax
+    )
 
-        sm.qqplot(
-            model.resid,
-            line="45",
-            fit=True
-        )
+    ax.set_title(
+        "Q-Q Plot of Regression Residuals"
+    )
 
-        plt.title(
-            "Q-Q Plot of Regression Residuals"
-        )
+    plt.tight_layout()
 
-        plt.tight_layout()
+    st.pyplot(fig)
 
-        st.pyplot(fig)
-
-        plt.close(fig)
-
+    plt.close(fig)
     # --------------------------------------------------------
     # Model Performance
     # --------------------------------------------------------
