@@ -319,6 +319,17 @@ with tab1:
         default=CATEGORIES["time"]
     )
 
+    # Optional numeric range filters (bill / tip), requested for
+    # "select particular data" style exploration alongside the
+    # categorical filters above.
+    bill_min, bill_max = float(df["total_bill"].min()), float(df["total_bill"].max())
+    selected_bill_range = st.sidebar.slider(
+        "Total Bill Range",
+        min_value=bill_min,
+        max_value=bill_max,
+        value=(bill_min, bill_max)
+    )
+
     # --------------------------------------------------------
     # Apply Filters
     # --------------------------------------------------------
@@ -328,6 +339,7 @@ with tab1:
         & df["smoker"].isin(selected_smoker)
         & df["day"].isin(selected_day)
         & df["time"].isin(selected_time)
+        & df["total_bill"].between(selected_bill_range[0], selected_bill_range[1])
     ]
 
     # --------------------------------------------------------
@@ -366,6 +378,17 @@ with tab1:
         col4.metric(
             "Average Tip %",
             f"{filtered_df['tip_pct'].mean():.2f}%"
+        )
+
+        # ----------------------------------------------------
+        # Full Summary Statistics Table
+        # ----------------------------------------------------
+
+        st.subheader("Summary Statistics (Filtered Selection)")
+
+        st.dataframe(
+            filtered_df.describe(include="all").round(3),
+            width="stretch"
         )
 
         # ----------------------------------------------------
@@ -970,29 +993,30 @@ with tab3:
         st.pyplot(fig)
 
         plt.close(fig)
-        
-with col2:
 
-    fig, ax = plt.subplots(
-        figsize=(7, 5)
-    )
+    with col2:
 
-    sm.qqplot(
-        model.resid,
-        line="45",
-        fit=True,
-        ax=ax
-    )
+        fig, ax = plt.subplots(
+            figsize=(7, 5)
+        )
 
-    ax.set_title(
-        "Q-Q Plot of Regression Residuals"
-    )
+        sm.qqplot(
+            model.resid,
+            line="45",
+            fit=True,
+            ax=ax
+        )
 
-    plt.tight_layout()
+        ax.set_title(
+            "Q-Q Plot of Regression Residuals"
+        )
 
-    st.pyplot(fig)
+        plt.tight_layout()
 
-    plt.close(fig)
+        st.pyplot(fig)
+
+        plt.close(fig)
+
     # --------------------------------------------------------
     # Model Performance
     # --------------------------------------------------------
